@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Reforma de la oficina</title>
-<meta name="description" content="Antes y después de la reforma de una oficina: cuatro ambientes, un reel y un comparador para deslizar.">
+<meta name="description" content="Antes y después de la reforma de una oficina: cinco ambientes, un reel y un comparador para deslizar.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -139,9 +139,9 @@ h2.title {
 .stage { display: grid; gap: 14px; justify-items: center; min-width: 0; }
 .compare {
   position: relative;
-  width: min(100%, calc(80vh * 0.7498));
+  width: min(100%, calc(80vh * var(--ar, .85)));
   max-width: 100%;
-  aspect-ratio: 896 / 1195;
+  aspect-ratio: var(--ar, .85);
   overflow: hidden;
   border-radius: 6px;
   background: var(--line);
@@ -230,6 +230,10 @@ h3 {
 .specs .was { color: var(--muted); font-size: 13.5px; text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 55%, transparent); }
 .specs .now { font-weight: 500; }
 .specs .now::before { content: "→ "; color: var(--accent); font-weight: 600; }
+.palette { display: flex; flex-wrap: wrap; gap: 14px 18px; margin: 10px 0 0; padding: 0; list-style: none; }
+.palette li { display: grid; justify-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.palette i { width: 38px; height: 38px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+@media (prefers-color-scheme: dark) { .palette i { box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); } }
 .kept {
   font-size: 13.5px; color: var(--muted); margin: 0;
   padding: 14px 16px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line);
@@ -250,7 +254,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
   <div>
     <p class="eyebrow">Reforma interior · Oficina</p>
     <h1>Mismos metros, <em>otra oficina</em></h1>
-    <p class="lede">Cuatro ambientes rediseñados de punta a punta: pisos, luz, muebles a medida y una divisoria vidriada que ordena todo.</p>
+    <p class="lede">Cinco ambientes rediseñados de punta a punta: piso de madera, luz en rieles, guardado a medida y una paleta de bordó, madera y manteca que une todo.</p>
     <a class="cta" href="#comparador">Comparar ambiente por ambiente ↓</a>
   </div>
   <figure class="reel" style="margin:0">
@@ -297,79 +301,111 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
           <h3>Qué cambió</h3>
           <ul class="specs" id="specs"></ul>
         </div>
+        <div>
+          <h3>Paleta</h3>
+          <ul class="palette" id="palette"></ul>
+        </div>
         <p class="kept" id="kept"></p>
       </aside>
     </div>
   </div>
 </section>
 
-<footer class="wrap">Fotos reales del antes y del después, tomadas desde el mismo punto de vista.</footer>
+<footer class="wrap">Antes: fotos del estado original. Después: imágenes del proyecto, alineadas al mismo punto de vista. La recepción se muestra como propuesta.</footer>
 
 <script>
 (() => {
+  // Paleta del estudio (muestras tomadas de las láminas)
+  const C = {
+    bordo: ["Bordó", "#55151c"], madera: ["Madera", "#a8692e"], manteca: ["Manteca", "#d8bfa2"],
+    negro: ["Negro", "#181614"], maderaClara: ["Madera clara", "#cd975b"], gris: ["Gris", "#68635d"],
+    caramelo: ["Caramelo", "#a15e29"], roble: ["Madera clara", "#dbb691"]
+  };
   const ROOMS = [
     {
-      id: "trabajo", tab: "Trabajo", name: "Espacio de trabajo",
-      lede: "Del escritorio en L y la cerámica con guarda a un área de trabajo abierta y cálida.",
+      id: "recepcion", tab: "Recepción", name: "Recepción", ar: 900 / 1072, afterLabel: "Propuesta",
+      lede: "El tabique con vitral se cambia por vidrio repartido: el estar de recepción y la sala de reuniones pasan a verse entre sí.",
+      before: "fotos/recepcion-antes-alineada.jpg", after: "fotos/recepcion-despues.jpg",
+      altBefore: "Antes: ambiente vacío con piso cerámico, paredes blancas y un tabique de madera con vitral de colores.",
+      altAfter: "Propuesta: sillón curvo color caramelo, mesa auxiliar bordó y una planta, frente a un cerramiento de vidrio repartido con marco bordó; pared con varillado vertical, rieles de luz y piso de madera clara.",
+      specs: [
+        ["Divisoria", "Tabique de madera con vitral", "Vidrio repartido con marco bordó"],
+        ["Pared", "Blanca lisa", "Varillado vertical en tono manteca"],
+        ["Piso", "Cerámica", "Madera clara"],
+        ["Luz", "Plafón central", "Rieles con spots"],
+        ["Equipo", "Ambiente vacío", "Estar con sillón curvo y mesa auxiliar bordó"]
+      ],
+      palette: [C.bordo, C.caramelo, C.manteca, C.roble],
+      kept: "el cielorraso con cajón."
+    },
+    {
+      id: "trabajo", tab: "Trabajo", name: "Sector de trabajo", ar: 900 / 1038,
+      lede: "Se reordenó el guardado y el apoyo, y una mesa alta bordó pasó a ser el centro del sector.",
       before: "fotos/trabajo-antes-alineada.jpg", after: "fotos/trabajo-despues.jpg",
-      altBefore: "Antes: escritorio en L de melamina, estanterías vacías, piso cerámico beige y bocas de luz sin terminar.",
-      altAfter: "Después: biblioteca y escritorio corrido de roble, mesa alta bordó con banquetas sobre una alfombra texturada, riel de luces y piso de madera.",
+      altBefore: "Antes: estanterías de madera vacías, escritorio largo, piso cerámico con guarda y bocas de luz sin terminar.",
+      altAfter: "Después: biblioteca y escritorio corrido con dos puestos, mesa alta bordó con cuatro banquetas sobre alfombra de yute, rieles con spots, cortinas romanas y piso de madera.",
       specs: [
-        ["Piso", "Cerámica beige con guarda", "Piso de madera clara"],
-        ["Muebles", "Escritorio en L de melamina", "Biblioteca y escritorio corrido de roble"],
-        ["Centro", "Escritorio de recepción", "Mesa alta bordó con cuatro banquetas"],
-        ["Luz", "Bocas de techo sin terminar", "Riel perimetral con spots"],
-        ["Lateral", "Placard de melamina", "Revestimiento de listones de madera"],
-        ["Ventanas", "Rejas y equipo de aire a la vista", "Cortinas romanas de lino"]
+        ["Piso", "Cerámica con guarda", "Piso de madera"],
+        ["Guardado", "Estanterías vacías y escritorio largo", "Biblioteca y escritorio corrido reconfigurados"],
+        ["Centro", "Sin lugar de reunión", "Mesa alta de trabajo y reunión"],
+        ["Color", "Bordó solo en el mueble bajo ventana", "Bordó repetido en la mesa y las banquetas"],
+        ["Luz", "Bocas de techo sin terminar", "Rieles con spots"],
+        ["Ventanas", "Rejas a la vista", "Cortinas romanas de tela"]
       ],
-      kept: "la carpintería de la ventana, la puerta al patio y el mueble bajo la ventana."
+      palette: [C.bordo, C.madera, C.manteca, C.negro],
+      kept: "la carpintería de las ventanas, la puerta al patio y el mueble bordó bajo la ventana."
     },
     {
-      id: "cocina", tab: "Cocina", name: "Office / cocina",
-      lede: "La kitchenette pasó de azulejo y granito a un bloque de color de piso a techo.",
+      id: "cocina", tab: "Cocina", name: "Cocina", ar: 900 / 1129,
+      lede: "La kitchenette deja el azulejo blanco y se vuelve un bloque bordó, con el piso continuo hacia la oficina.",
       before: "fotos/cocina-antes-alineada.jpg", after: "fotos/cocina-despues.jpg",
-      altBefore: "Antes: kitchenette con azulejos, alacenas blancas, mesada de granito y puerta plegadiza de madera.",
-      altAfter: "Después: muebles terracota mate de piso a techo, mesada blanca, grifería negra y estante para tazas.",
+      altBefore: "Antes: kitchenette con azulejos, alacenas blancas, mesada gris con bacha, caños a la vista y puerta plegadiza de madera.",
+      altAfter: "Después: alacenas, bajo mesada y paredes en bordó, la misma mesada gris, heladera bajo mesada de acero, estante abierto con luz cálida y piso de madera clara.",
       specs: [
-        ["Muebles", "Alacenas blancas sueltas", "Muebles terracota mate de piso a techo"],
-        ["Mesada", "Granito gris con bacha a la vista", "Mesada blanca con bacha bajo mesada"],
-        ["Paredes", "Azulejos con junta marcada", "Pintura en el mismo tono que los muebles"],
-        ["Grifería", "Canilla cromada", "Grifería negra"],
-        ["Acceso", "Puerta plegadiza de madera", "Vano abierto con marco de madera"],
-        ["Piso", "Cerámica", "Piso de madera clara"]
+        ["Muebles", "Alacenas blancas", "Mobiliario en tono bordó"],
+        ["Paredes", "Azulejos con junta marcada", "Pintadas en bordó, acabado liso"],
+        ["Bajo mesada", "Caños a la vista", "Heladera bajo mesada"],
+        ["Estante", "Sin estantes", "Estante abierto con iluminación cálida"],
+        ["Acceso", "Puerta plegadiza de madera", "Vano abierto"],
+        ["Piso", "Cerámica", "Madera clara, continua hacia la oficina"]
       ],
-      kept: "el vano y su marco de madera."
+      palette: [C.bordo, C.maderaClara, C.manteca, C.gris],
+      kept: "la mesada gris original."
     },
     {
-      id: "reuniones", tab: "Reuniones", name: "Sala de reuniones",
+      id: "reuniones", tab: "Reuniones", name: "Sala de reuniones", ar: 900 / 1024,
       lede: "El mismo ambiente, con la misma ventana corrida y la misma banquina de madera. Cambió todo lo demás.",
       before: "fotos/reuniones-antes-alineada.jpg", after: "fotos/reuniones-despues.jpg",
       altBefore: "Antes: ambiente vacío con alfombra mostaza gastada, paredes blancas y un mueble de madera con vitral geométrico.",
-      altAfter: "Después: sala de reuniones con piso de madera clara, alfombra mostaza, mesa oscura con seis sillas, biblioteca de roble y divisoria vidriada con marco bordó.",
+      altAfter: "Después: sala de reuniones con piso de madera, alfombra mostaza con círculos, mesa oscura con seis sillas, biblioteca de madera y cerramiento de vidrio repartido con marco bordó.",
       specs: [
-        ["Piso", "Alfombra mostaza gastada", "Piso de madera clara con alfombra de diseño"],
-        ["Lateral", "Mueble con vitral geométrico", "Divisoria vidriada con marco bordó"],
-        ["Fondo", "Pared blanca vacía", "Biblioteca de roble a medida con cajonera"],
-        ["Luz", "Boca de techo sin terminar", "Colgante lineal y spots dirigibles"],
-        ["Ventanas", "Sin cortinas", "Cortinas roller screen"],
+        ["Piso", "Alfombra mostaza gastada", "Piso de madera con alfombra de diseño"],
+        ["Lateral", "Mueble con vitral geométrico", "Cerramiento de vidrio repartido"],
+        ["Fondo", "Pared blanca vacía", "Mobiliario de guardado en madera"],
+        ["Luz", "Boca de techo sin terminar", "Colgante lineal y spots"],
+        ["Ventanas", "Sin cortinas", "Cortinas roller"],
         ["Equipo", "Sin mobiliario", "Mesa de reunión para seis"]
       ],
+      palette: [C.bordo, C.madera, C.manteca, C.negro],
       kept: "la banquina de madera bajo la ventana y la carpintería de aluminio."
     },
     {
-      id: "estar", tab: "Estar", name: "Sala de espera",
-      lede: "El tabique con vitral se reemplazó por vidrio: ahora el estar y la sala de reuniones se ven entre sí.",
-      before: "fotos/estar-antes-alineada.jpg", after: "fotos/estar-despues.jpg",
-      altBefore: "Antes: ambiente vacío con piso cerámico, paredes blancas y un tabique de madera con vitral de colores.",
-      altAfter: "Después: sillón curvo mostaza y mesa auxiliar bordó frente a una divisoria vidriada con marco bordó, paredes con paneles verticales y riel de luces.",
+      id: "bano", tab: "Baño", name: "Baño", ar: 900 / 1057,
+      lede: "Renovación integral en tonos neutros y madera clara, con un solo acento bordó: la bacha.",
+      before: "fotos/bano-antes-alineada.jpg", after: "fotos/bano-despues.jpg",
+      altBefore: "Antes: azulejos blancos con guarda celeste, espejo redondo con marco azul, aplique de pared, bajo mesada de madera rojiza y piso celeste.",
+      altAfter: "Después: paredes en tono neutro liso, espejo con marco curvo negro, bacha de apoyo bordó con grifería negra, mueble flotante de madera clara y piso de madera.",
       specs: [
-        ["Divisoria", "Tabique de madera con vitral", "Vidrio con marco bordó y puerta"],
-        ["Paredes", "Blancas lisas", "Revestimiento de paneles verticales"],
-        ["Piso", "Cerámica", "Piso de madera clara"],
-        ["Luz", "Plafón central", "Riel con spots"],
-        ["Equipo", "Sin mobiliario", "Sillón curvo mostaza y mesa auxiliar bordó"]
+        ["Paredes", "Azulejo blanco con guarda celeste", "Revestimiento neutro, terminación lisa"],
+        ["Mueble", "Bajo mesada de madera rojiza", "Mueble flotante en madera clara"],
+        ["Bacha", "Bacha empotrada", "Bacha de apoyo bordó"],
+        ["Grifería", "Cromada", "Grifería y accesorios en negro mate"],
+        ["Espejo", "Redondo con marco azul", "Marco curvo negro"],
+        ["Piso", "Cerámica celeste", "Piso de madera"],
+        ["Luz", "Aplique de pared", "Iluminación general y puntual"]
       ],
-      kept: "el cielorraso con cajón y la ubicación de la puerta."
+      palette: [C.bordo, C.madera, C.manteca, C.negro],
+      kept: "la mesada de mármol y la puerta."
     }
   ];
 
@@ -422,7 +458,11 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
       $("roomLede").textContent = r.lede;
       $("specs").innerHTML = r.specs.map(([k, was, now]) =>
         `<li><span class="k">${esc(k)}</span><span class="v"><span class="was">${esc(was)}</span><span class="now">${esc(now)}</span></span></li>`).join("");
-      $("kept").innerHTML = `<strong>Se conservó:</strong> ${esc(r.kept)}`;
+      $("palette").innerHTML = r.palette.map(([n, c]) =>
+        `<li><i style="background:${c}"></i>${esc(n)}</li>`).join("");
+      $("kept").innerHTML = `<strong>Se conserva:</strong> ${esc(r.kept)}`;
+      box.style.setProperty("--ar", r.ar);
+      tagA.textContent = r.afterLabel || "Después";
       set(50, false);
       box.classList.remove("swapping");
     };
@@ -447,8 +487,9 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
   range.addEventListener("input", () => set(Number(range.value), false));
   quick.forEach(b => b.addEventListener("click", () => set(Number(b.dataset.pos), !reduce)));
 
-  // Ambiente inicial: el del link (#cocina, #estar...) o el primero
-  const fromHash = ROOMS.findIndex(r => "#" + r.id === location.hash);
+  // Ambiente inicial: el del link (#cocina, #bano...) o el primero
+  const hash = location.hash === "#estar" ? "#recepcion" : location.hash; // link viejo
+  const fromHash = ROOMS.findIndex(r => "#" + r.id === hash);
   show(fromHash >= 0 ? fromHash : 0, false);
 
   if (!reduce) {
