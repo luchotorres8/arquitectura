@@ -255,6 +255,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
   </div>
   <figure class="reel" style="margin:0">
     <video id="reel" src="reel.mp4" poster="reel-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Reel: el proceso y el resultado de cada ambiente"></video>
+    <button type="button" class="reel-sound" id="reelSound" aria-pressed="false">🔇 Activar sonido</button>
   </figure>
 </header>
 
@@ -458,6 +459,16 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; color: var
   // Reel: sin movimiento si el usuario lo pidió
   const reel = $("reel");
   if (reduce) { reel.removeAttribute("autoplay"); reel.pause(); reel.controls = true; }
+
+  // Sonido: los navegadores solo dejan arrancar en silencio; se activa con un toque
+  const snd = $("reelSound");
+  snd.addEventListener("click", () => {
+    const on = reel.muted;
+    reel.muted = !on;
+    if (on) { reel.currentTime = 0; reel.play().catch(() => {}); }
+    snd.textContent = on ? "🔊 Silenciar" : "🔇 Activar sonido";
+    snd.setAttribute("aria-pressed", String(on));
+  });
 })();
 </script>
 </body>
